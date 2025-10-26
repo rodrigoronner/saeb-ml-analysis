@@ -1,57 +1,57 @@
-# Machine Learning Analysis of SAEB 2023 Dataset\
-\
-This repository contains the code and data for a machine learning analysis based on the SAEB 2023 dataset. The primary goal of this research is to investigate the relationship between educational factors, particularly teacher training, and student performance in Brazil.\
-\
+# Machine Learning Analysis of SAEB 2023 Dataset
+
+This repository contains the code and data for a machine learning analysis based on the SAEB 2023 dataset. The primary goal of this research is to investigate the relationship between educational factors, particularly teacher training, and student performance in Brazil.
+
 The scripts provided allow for the replication of our key experiments, including feature selection, model comparison, and model interpretation.\
+
+## Dataset
+
+* **`data/saeb_final_processado.parquet`**: The primary dataset used for all analyses. This is a pre-processed Parquet file containing anonymized data from the SAEB 2023 survey, including teacher qualifications, school infrastructure, student participation rates, and student proficiency scores in Mathematics (MT) and Language (LP).
+
+## Project Structure
+
+* `/data`: Contains the raw `.parquet` dataset.
+* `/src`: Contains all executable Python scripts for the analysis.
+* `/results`: The default output directory for all generated plots and reports. This directory is included in `.gitignore`.
+* `requirements.txt`: A list of all necessary Python packages.
+* `README.md`: This file.
 \
-## Dataset\
-\
-* **`data/saeb_final_processado.parquet`**: The primary dataset used for all analyses. This is a pre-processed Parquet file containing anonymized data from the SAEB 2023 survey, including teacher qualifications, school infrastructure, student participation rates, and student proficiency scores in Mathematics (MT) and Language (LP).\
-\
-## Project Structure\
-\
-* `/data`: Contains the raw `.parquet` dataset.\
-* `/src`: Contains all executable Python scripts for the analysis.\
-* `/results`: The default output directory for all generated plots and reports. This directory is included in `.gitignore`.\
-* `requirements.txt`: A list of all necessary Python packages.\
-* `README.md`: This file.\
-\
-## Setup and Installation\
-\
-To replicate this analysis, please follow these steps:\
-\
-1.  **Clone the repository:**\
+## Setup and Installation
+
+To replicate this analysis, please follow these steps:
+
+1.  **Clone the repository:**
     ```bash\
     git clone [https://github.com/](https://github.com/)[YOUR_USERNAME]/saeb-ml-analysis.git\
     cd saeb-ml-analysis\
     ```\
-\
-2.  **Install Git LFS:**\
+
+2.  **Install Git LFS:**
     This project uses Git Large File Storage (LFS) for the dataset. You must have Git LFS installed.\
     ```bash\
     git lfs install\
     git lfs pull\
     ```\
-\
-3.  **Create a Virtual Environment (Recommended):**\
+
+3.  **Create a Virtual Environment (Recommended):**
     ```bash\
     python -m venv venv\
     source venv/bin/activate  # On Windows, use `venv\\Scripts\\activate`\
     ```\
-\
+
 4.  **Install Dependencies:**\
     ```bash\
     pip install -r requirements.txt\
     ```\
-\
-## Running the Experiments\
-\
-The analysis is divided into several scripts located in the `/src` directory. They are numbered in a suggested order of execution.\
-\
+
+## Running the Experiments
+
+The analysis is divided into several scripts located in the `/src` directory. They are numbered in a suggested order of execution.
+
 **Note on Target Variables:** This project tests multiple definitions for the target variable (`desempenho_binario` - binary performance). Each script clearly defines how its target variable is created.\
-\
+
 ---\
-\
+
 ### 1. Feature Selection (`1_feature_selection_boruta.py`)\
 \
 This script utilizes the **Boruta** algorithm to perform rigorous feature selection on a 10% sample of the dataset, identifying all statistically relevant features.\

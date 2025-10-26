@@ -1,11 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2865
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-
-\f0\fs24 \cf0 # Machine Learning Analysis of SAEB 2023 Dataset\
+# Machine Learning Analysis of SAEB 2023 Dataset\
 \
 This repository contains the code and data for a machine learning analysis based on the SAEB 2023 dataset. The primary goal of this research is to investigate the relationship between educational factors, particularly teacher training, and student performance in Brazil.\
 \
@@ -61,7 +54,7 @@ The analysis is divided into several scripts located in the `/src` directory. Th
 \
 ### 1. Feature Selection (`1_feature_selection_boruta.py`)\
 \
-This script uses the **Boruta** algorithm to perform rigorous feature selection on a 10% sample of the dataset to identify all statistically relevant features.\
+This script utilizes the **Boruta** algorithm to perform rigorous feature selection on a 10% sample of the dataset, identifying all statistically relevant features.\
 \
 * **Target Variable:** `desempenho_binario` is defined as student Math proficiency (`PROFICIENCIA_MT_SAEB`) being **above or below the mean for their specific teaching stage** (`media_por_etapa`).\
 * **To Run:**\
@@ -91,7 +84,7 @@ This script trains and evaluates four different tree-based models to find the be
 \
 ### 3. Model Interpretation (`3_model_interpretation_shap.py`)\
 \
-This script uses **SHAP (SHapley Additive exPlanations)** to interpret the "black box" `RandomForestClassifier` and understand *why* it makes its predictions. It runs on a large sample (`40,000`) for stability.\
+This script uses **SHAP (SHapley Additive exPlanations)** to interpret the `RandomForestClassifier` and understand *why* it makes its predictions. It runs on a large sample (`40,000`) for stability.\
 \
 * **Target Variable:** `desempenho_binario` is defined using a **composite score** (mean of Math and Portuguese proficiency) compared to the **global composite mean**.\
 * **Note:** This analysis also **drops the `ETAPA_ENSINO` column**.\

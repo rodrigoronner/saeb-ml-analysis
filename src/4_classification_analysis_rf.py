@@ -1,4 +1,4 @@
-# analise_classificacao.py (Corrigido)
+# analise_classificacao.py 
 
 import pandas as pd
 import numpy as np
@@ -9,50 +9,50 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
 import time
-import os # <--- CORREÇÃO APLICADA AQUI
+import os # <--- CORRECTION APPLIED HERE
 
-print("--- FASE 1: CARREGANDO E PREPARANDO OS DADOS ---")
+print("--- STAGE 1: LOADING AND PREPARING DATA ---")
 try:
     df = pd.read_parquet('data/saeb_final_processado.parquet')
-    print("Dataset 'saeb_final_processado.parquet' carregado com sucesso.")
+    print("Dataset 'saeb_final_processado.parquet' loaded successfully.")
 except FileNotFoundError:
-    print("ERRO: O arquivo 'saeb_final_processado.parquet' não foi encontrado.")
+    print("ERROR: File 'saeb_final_processado.parquet' not found.")
     exit()
 
-# Criação robusta da variável alvo
-print("Calculando o desempenho binário com base na média de cada etapa de ensino...")
+# Robust creation of the target variable
+print("Calculating binary performance based on the mean of each teaching stage...")
 df['media_por_etapa'] = df.groupby('ETAPA_ENSINO')['PROFICIENCIA_MT_SAEB'].transform('mean')
 df['desempenho_binario'] = (df['PROFICIENCIA_MT_SAEB'] >= df['media_por_etapa']).astype(int)
 
-# Separação das features e do alvo
+# Separation of features (X) and target (y)
 X = df.drop(columns=['PROFICIENCIA_MT_SAEB', 'PROFICIENCIA_LP_SAEB', 'desempenho_binario', 'media_por_etapa'], errors='ignore')
 y = df['desempenho_binario']
 
-# One-Hot Encoding da coluna 'ETAPA_ENSINO'
-print("Aplicando One-Hot Encoding na coluna 'ETAPA_ENSINO'...")
+# One-Hot Encoding the 'ETAPA_ENSINO' column
+print("Applying One-Hot Encoding to the 'ETAPA_ENSINO' column...")
 X = pd.get_dummies(X, columns=['ETAPA_ENSINO'], drop_first=True)
 
-# Divisão em treino e teste
+# Split into train and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-# Aplicação do Scaler
+# Apply Scaler
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-print("Preparação dos dados concluída.")
+print("Data preparation complete.")
 
 
-print("\n--- FASE 2: TREINAMENTO DO MODELO RANDOM FOREST ---")
+print("\n--- STAGE 2: RANDOM FOREST MODEL TRAINING ---")
 model = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=42)
 
-print("Treinando o modelo Random Forest...")
+print("Training the Random Forest model...")
 start_time = time.time()
 model.fit(X_train_scaled, y_train)
 end_time = time.time()
-print(f"Treinamento concluído em {end_time - start_time:.2f} segundos.")
+print(f"Training completed in {end_time - start_time:.2f} seconds.")
 
 
-print("\n--- FASE 3: AVALIAÇÃO E GERAÇÃO DA MATRIZ DE CONFUSÃO ---")
+print("\n--- STAGE 3: EVALUATION AND CONFUSION MATRIX GENERATION ---")
 y_pred = model.predict(X_test_scaled)
 
 cm = confusion_matrix(y_test, y_pred)
@@ -78,8 +78,8 @@ plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
 plt.tight_layout()
 
-output_dir = "graficos_comparativos"
-os.makedirs(output_dir, exist_ok=True) # Agora esta linha funcionará
+output_dir = "results" # <-- Changed to 'results'
+os.makedirs(output_dir, exist_ok=True) # Now this line will work
 plt.savefig(os.path.join(output_dir, 'confusion_matrix_ampliado.png'), dpi=300)
-print(f"Gráfico 'confusion_matrix_ampliado.png' salvo em '{output_dir}'.")
-plt.show()
+print(f"Plot 'confusion_matrix_ampliado.png' saved in '{output_dir}'.")
+# plt.show() # Optional: Commented out

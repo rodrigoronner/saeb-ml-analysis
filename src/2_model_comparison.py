@@ -5,51 +5,52 @@ import matplotlib.pyplot as plt
 import time
 import os
 
-# Modelos
+# Models
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 
-# Métricas e Pré-processamento
+# Metrics and Preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import classification_report, accuracy_score, roc_curve, roc_auc_score
 
-print("--- FASE 1: CARREGANDO E PREPARANDO OS DADOS ---")
+print("--- STAGE 1: LOADING AND PREPARING DATA ---")
 try:
     df = pd.read_parquet('data/saeb_final_processado.parquet')
-    print("Dataset corrigido carregado com sucesso.")
+    print("Processed dataset loaded successfully.")
 except FileNotFoundError:
-    print("ERRO: O arquivo 'saeb_final_processado_corrigido.parquet' não foi encontrado.")
+    print("ERROR: File 'saeb_final_processado.parquet' not found.")
     exit()
 
-# Criação da variável alvo usando a média global, como definido
-print("Calculando o desempenho binário com base na média global do dataset...")
+# Create the target variable using the global mean, as defined
+print("Calculating binary performance based on the dataset's global mean...")
 media_proficiencia_global = df['PROFICIENCIA_MT_SAEB'].mean()
 df['desempenho_binario'] = (df['PROFICIENCIA_MT_SAEB'] >= media_proficiencia_global).astype(int)
 
-# Separação das features e do alvo
+# Separate features (X) and target (y)
 X = df.drop(columns=['PROFICIENCIA_MT_SAEB', 'PROFICIENCIA_LP_SAEB', 'desempenho_binario'], errors='ignore')
 y = df['desempenho_binario']
 
-# **AJUSTE PRINCIPAL APLICADO AQUI**
-# Removemos a coluna 'ETAPA_ENSINO' do conjunto de features para que ela não seja usada na predição.
-print("Removendo a variável 'ETAPA_ENSINO' das features do modelo...")
+# **KEY ADJUSTMENT APPLIED HERE**
+# We remove the 'ETAPA_ENSINO' (teaching stage) column from the feature set
+# so it is not used in the prediction.
+print("Removing the 'ETAPA_ENSINO' variable from the model features...")
 if 'ETAPA_ENSINO' in X.columns:
     X = X.drop(columns=['ETAPA_ENSINO'])
 
-# Divisão em treino e teste
+# Split into train and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-# Aplicação do Scaler (agora sem erros, pois não há mais colunas de texto)
+# Apply Scaler (now error-free, as there are no more text columns)
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-print("Preparação dos dados concluída.")
+print("Data preparation complete.")
 
 
-print("\n--- FASE 2: DEFINIÇÃO E TREINAMENTO DOS MODELOS (CPU-OPTIMIZED) ---")
+print("\n--- STAGE 2: MODEL DEFINITION AND TRAINING (CPU-OPTIMIZED) ---")
 
 models = {
     "Random Forest": RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=42),
@@ -85,8 +86,8 @@ for name, model in models.items():
     fpr, tpr, _ = roc_curve(y_test, y_prob)
     roc_data[name] = {"fpr": fpr, "tpr": tpr, "auc": roc_auc_score(y_test, y_prob)}
 
-# --- FASE 3: RESULTADOS E VISUALIZAÇÕES ---
-# (O restante do código para gerar os relatórios e gráficos permanece o mesmo)
+# --- STAGE 3: RESULTS AND VISUALIZATIONS ---
+# (The rest of the code for generating reports and graphs remains the same)
 print("\n" + "="*60)
 print(" DETAILED CLASSIFICATION REPORT PER MODEL ")
 print("="*60)
@@ -102,6 +103,11 @@ print("="*60)
 print(results_df.set_index('Model').round(4))
 
 print("\n--- Generating Comparative ROC Curve ---")
+
+# Define output directory
+output_dir = "results"
+os.makedirs(output_dir, exist_ok=True)
+
 plt.figure(figsize=(10, 8))
 for name, data in roc_data.items():
     plt.plot(data["fpr"], data["tpr"], label=f'{name} (AUC = {data["auc"]:.3f})')
@@ -111,4 +117,10 @@ plt.ylabel('True Positive Rate')
 plt.title('Comparative ROC Curve of Models')
 plt.legend()
 plt.grid(True)
-plt.show()
+plt.tight_layout()
+
+# Save the figure
+output_path = os.path.join(output_dir, "comparative_roc_curve.png")
+plt.savefig(output_path, dpi=300, bbox_inches='tight')
+print(f"Comparative ROC curve saved to {output_path}")
+# plt.show() # Optional: Commented out to prevent blocking script execution

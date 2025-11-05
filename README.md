@@ -113,4 +113,4 @@ This script provides a deep-dive analysis into a single `RandomForestClassifier`
 
 ## Citation
 
-If you use this code or data in your research, please cite our article:}
+If you use this code or data in your research, please cite our article: Tertulino, R., & Almeida, R. (2025). A Multi-level Analysis of Factors Associated with Student Performance: A Machine Learning Approach to the SAEB Microdata. arXiv preprint arXiv:2510.22266.

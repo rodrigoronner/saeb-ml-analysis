@@ -14,7 +14,6 @@ The scripts provided allow for the replication of our key experiments, including
 * `/src`: Contains all executable Python scripts for the analysis.
 * `/results`: The default output directory for all generated plots and reports. This directory is included in `.gitignore`.
 * `requirements.txt`: A list of all necessary Python packages.
-* `README.md`: This file.
 
 ## Setup and Installation
 
